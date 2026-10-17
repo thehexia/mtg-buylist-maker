@@ -112,6 +112,25 @@ button:disabled {
   will-change: transform;
 }
 
+.card-art,
+.card-art-placeholder {
+  width: 100%;
+  max-width: 220px;
+  margin: 0 auto 12px;
+  border-radius: 10px;
+  overflow: hidden;
+  aspect-ratio: 63 / 88;
+}
+
+.card-art-placeholder {
+  background: var(--surface-2);
+}
+
+.card-art img {
+  width: 100%;
+  display: block;
+}
+
 .card .qty {
   font-size: 0.8rem;
   color: var(--muted);

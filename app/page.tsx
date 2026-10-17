@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useBuylist } from "@/hooks/useBuylist";
+import { useArtCache } from "@/hooks/useArtCache";
 import { CardSwipe } from "@/components/CardSwipe";
 import { isMoxfieldDeckUrl } from "@/lib/validate-url";
 import { formatTcgplayerList, TCGPLAYER_BUYLIST_URL } from "@/lib/tcgplayer";
@@ -24,6 +25,13 @@ function useIsTouch() {
 export default function Home() {
   const isTouch = useIsTouch();
   const { state, startDeck, decide, reset, buylist, done, current } = useBuylist();
+  const { getArt, fetchArt } = useArtCache();
+
+  useEffect(() => {
+    if (current) {
+      void fetchArt(current.name, current.set);
+    }
+  }, [current?.name, current?.set, fetchArt]);
 
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -158,6 +166,7 @@ export default function Home() {
             total={state.deck.length}
             onDecide={decide}
             isTouch={isTouch}
+            artUrl={getArt(current.name, current.set)}
           />
           <button onClick={startOver}>Reset</button>
         </>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Card as CardType } from "@/lib/types";
 import type { Decision } from "@/hooks/useBuylist";
 
@@ -12,16 +12,23 @@ export function CardSwipe({
   total,
   onDecide,
   isTouch,
+  artUrl,
 }: {
   card: CardType;
   position: number;
   total: number;
   onDecide: (choice: Decision) => void;
   isTouch: boolean;
+  artUrl: string | null | undefined;
 }) {
   const [dx, setDx] = useState(0);
   const startX = useRef<number | null>(null);
   const startY = useRef<number | null>(null);
+  const [imgErr, setImgErr] = useState(false);
+
+  useEffect(() => {
+    setImgErr(false);
+  }, [artUrl]);
 
   const onPointerDown = (e: React.PointerEvent) => {
     startX.current = e.clientX;
@@ -56,6 +63,18 @@ export function CardSwipe({
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
     >
+      {artUrl === undefined && (
+        <div className="card-art-placeholder" aria-hidden />
+      )}
+      {typeof artUrl === "string" && !imgErr && (
+        <div className="card-art">
+          <img
+            src={artUrl}
+            alt={card.name}
+            onError={() => setImgErr(true)}
+          />
+        </div>
+      )}
       <div className="qty">
         Qty {card.quantity}
         {card.set ? ` · ${card.set}` : ""}
